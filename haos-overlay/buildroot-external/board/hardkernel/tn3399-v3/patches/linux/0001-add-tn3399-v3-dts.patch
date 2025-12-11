@@ -13,7 +13,7 @@ new file mode 100644
 index 0000000..abcdefg
 --- /dev/null
 +++ b/arch/arm64/boot/dts/rockchip/rk3399-tn3399-v3.dts
-@@ -0,0 +1,888 @@
+@@ -0,0 +1,890 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright (c) 2017 Fuzhou Rockchip Electronics Co., Ltd.
@@ -614,6 +614,8 @@ index 0000000..abcdefg
 +&i2s1 {
 +	rockchip,playback-channels = <2>;
 +	rockchip,capture-channels = <2>;
++	assigned-clocks = <&cru SCLK_I2S1_8CH>;
++	assigned-clock-parents = <&cru PLL_GPLL>;
 +	status = "okay";
 +};
 +
