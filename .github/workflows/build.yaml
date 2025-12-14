@@ -1,8 +1,8 @@
 name: Multi-Target Build
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 28 * ?'  #  每月28日0时编译，cron表达式，格式为分 时 日 月 周
+  #schedule:
+  #  - cron: '0 0 28 * ?'  #  每月28日0时编译，cron表达式，格式为分 时 日 月 周
   #push:
   #  branches: ["master"]
 env:
