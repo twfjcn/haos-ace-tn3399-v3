@@ -4,7 +4,7 @@
 
 - 系统ota升级请从发布页面下载最新raucb升级包，然后登录 http://ip:4000 后台进行上传升级，后台默认用户名：admin，密码：123456。
 
-======================
+---
 
 # Home Assistant OS Accelerated China Edition（haos-ace） Build System
 
