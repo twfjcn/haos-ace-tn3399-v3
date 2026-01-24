@@ -1,6 +1,6 @@
 # HAOS FOR TN3399-V3 build system
 
-- 本项目fork from [LanSilence/haos-ace](https://github.com/LanSilence/haos-ace) ，为自用增加适配了TN3399-V3开发板，时间同步服务器保留使用国内服务器，原项目的国内镜像仓库等加速去掉了，保持跟HA官方一致，因为我网络有梯子反而不好用。
+- 本项目forked from [LanSilence/haos-ace](https://github.com/LanSilence/haos-ace) ，为自用增加适配了TN3399-V3开发板，时间同步服务器保留使用国内服务器，原项目的国内镜像仓库等加速去掉了，保持跟HA官方一致，因为我网络有梯子反而不好用。
 
 - 系统ota升级请从发布页面下载最新raucb升级包，然后登录 http://ip:4000 后台进行上传升级，后台默认用户名：admin，密码：123456。
 
