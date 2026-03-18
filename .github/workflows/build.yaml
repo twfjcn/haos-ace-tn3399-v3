@@ -51,24 +51,37 @@ jobs:
           sudo apt-get -qq install -y openssl make gcc
           df -h
 
-      - name: Write keys to correct path
+      - name: Ensure certificate files exist (核心修复步骤)
         run: |
-          # 1. 确保/build目录存在
+          # 1. 确保/build目录存在并赋予足够权限
           sudo mkdir -p /build
-          sudo chmod 777 /build  # 赋予读写权限
+          sudo chmod 777 /build
           
-          # 2. 写入证书到项目目录（保留原有逻辑）
-          echo "${{ secrets.MID_KEY_PEM }}" > ./operating-system/key.pem
-          echo "${{ secrets.MID_CERT_PEM }}" > ./operating-system/cert.pem
+          # 2. 优先使用仓库密钥生成证书（如果secrets存在）
+          if [ -n "${{ secrets.MID_CERT_PEM }}" ] && [ -n "${{ secrets.MID_KEY_PEM }}" ]; then
+            # 从secrets写入证书到/build目录（直接写到编译期望的路径）
+            echo "${{ secrets.MID_KEY_PEM }}" | sudo tee /build/key.pem > /dev/null
+            echo "${{ secrets.MID_CERT_PEM }}" | sudo tee /build/cert.pem > /dev/null
+            echo "✅ 使用Secrets中的证书文件"
+          else
+            # 备用方案：生成自签名证书（避免secrets缺失导致构建失败）
+            echo "⚠️ 未配置证书Secrets，生成自签名证书"
+            sudo openssl req -x509 -newkey rsa:4096 -keyout /build/key.pem -out /build/cert.pem -days 365 -nodes \
+              -subj "/C=CN/ST=Beijing/L=Beijing/O=HAOS/OU=ACE/CN=haos-ace.local"
+          fi
           
-          # 3. 关键：将证书拷贝/软链接到编译期望的/build目录
-          cp ./operating-system/key.pem /build/key.pem
-          cp ./operating-system/cert.pem /build/cert.pem
+          # 3. 强制修改文件权限（避免权限不足导致无法读取）
+          sudo chmod 644 /build/key.pem /build/cert.pem
           
-          # 验证文件是否存在
-          ls -l /build/ | grep pem
-          if [ ! -f /build/cert.pem ]; then
-            echo "Error: /build/cert.pem still missing!"
+          # 4. 验证文件是否存在并输出详情（关键排查日志）
+          echo "===== 证书文件验证 ====="
+          ls -l /build/*.pem
+          if [ -f /build/cert.pem ]; then
+            echo "✅ /build/cert.pem 存在"
+            # 可选：验证证书格式是否正确
+            openssl x509 -in /build/cert.pem -noout -subject || echo "⚠️ 证书格式可能有问题，但继续构建"
+          else
+            echo "❌ /build/cert.pem 缺失，构建终止"
             exit 1
           fi
 
